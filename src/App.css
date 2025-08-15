@@ -1,0 +1,179 @@
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  padding: 2rem;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+.container {
+  text-align: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.container-cartoes {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.cartao,
+.cartao-grafico,
+.cartao-sessoes {
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid #333;
+  margin-bottom: 0rem;
+}
+.valor-dado {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4dd0e1;
+  margin-top: 0;
+}
+.valor-dado span {
+  font-size: 1.2rem;
+  color: #757575;
+}
+.container-historico {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Estilos para as Abas */
+.navegacao-abas {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.botao-aba {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 2px solid #555;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+.botao-aba:hover {
+  background-color: #444;
+  border-color: #777;
+}
+.botao-aba.ativo {
+  background-color: #4dd0e1;
+  color: #121212;
+  border-color: #4dd0e1;
+}
+
+/* --- NOVOS ESTILOS MELHORADOS PARA O HISTÓRICO --- */
+.cartao-sessoes {
+  text-align: left;
+}
+.container-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative; /* Posição relativa para o ícone da seta */
+}
+.container-dropdown label {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+/* Estilização customizada para o select (dropdown) */
+.container-dropdown select {
+  appearance: none; /* Remove a aparência padrão do navegador */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+}
+/* Ícone de seta customizado para o dropdown */
+.container-dropdown::after {
+  content: "▼";
+  font-size: 0.8rem;
+  color: #aaa;
+  position: absolute;
+  right: 1rem;
+  top: 2.3rem; /* Ajuste a posição vertical da seta */
+  pointer-events: none; /* Garante que o clique passe para o select */
+}
+
+/* MODIFICADO: Removemos o card de detalhes separado */
+.cartao-detalhes-sessao {
+  display: none;
+}
+
+/* MODIFICADO: Detalhes agora ficam dentro do card do gráfico */
+.cabecalho-grafico-historico {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+.cabecalho-grafico-historico h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+.detalhes-sessao {
+  display: flex;
+  justify-content: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #bbb;
+}
+.detalhes-sessao span strong {
+  color: #e0e0e0;
+}
+
+/* Estilos para o Gráfico de Medidor */
+.cartao-medidor {
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid #333;
+  margin-bottom: 0rem;
+  position: relative;
+  width: 300px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.texto-medidor {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.valor-medidor {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4dd0e1;
+  display: block;
+}
+.unidade-medidor {
+  font-size: 1.2rem;
+  color: #757575;
+  display: block;
+}

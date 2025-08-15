@@ -4,8 +4,11 @@ import "./App.css";
 import DashboardTempoReal from "./components/DashboardTempoReal";
 import DashboardHistorico from "./components/DashboardHistorico";
 
-const URL_SERVIDOR_SOCKET = "http://localhost:3001";
-const URL_API = "http://localhost:3001/api/logs";
+// MODIFICADO: Lê a URL base da variável de ambiente
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+const URL_SERVIDOR_SOCKET = BASE_URL;
+const URL_API = `${BASE_URL}/api/logs`;
 const MAXIMO_PONTOS_GRAFICO = 30;
 
 function App() {

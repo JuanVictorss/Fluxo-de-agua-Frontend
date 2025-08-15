@@ -48,7 +48,7 @@ fluxo-de-agua-frontend/
 ### 1️⃣ Clonar repositório
 
 ```bash
-git clone
+git clone https://github.com/JuanVictorss/Fluxo-de-agua-Frontend.git
 cd fluxo-de-agua-frontend
 ```
 

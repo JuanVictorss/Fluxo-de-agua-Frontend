@@ -4,7 +4,6 @@ import "./App.css";
 import DashboardTempoReal from "./components/DashboardTempoReal";
 import DashboardHistorico from "./components/DashboardHistorico";
 
-// MODIFICADO: Lê a URL base da variável de ambiente
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const URL_SERVIDOR_SOCKET = BASE_URL;

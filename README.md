@@ -6,6 +6,8 @@
 ![Recharts](https://img.shields.io/badge/Recharts-3.x-blue)
 
 ---
+## [Aplicação Online](https://fluxo-de-agua-frontend.vercel.app/)
+---
 
 ## 📜 Visão Geral
 

@@ -90,7 +90,7 @@ http://localhost:5173
 ## 🔗 Repositórios Relacionados
 
 - [📂 Backend](https://github.com/JuanVictorss/Fluxo-de-agua-Backend)
-- [📂 Firmware ESP32]()
+- [📂 Firmware ESP32](https://github.com/JuanVictorss/Fluxo-de-agua-ESP32-Firmware.git)
 
 ---
 

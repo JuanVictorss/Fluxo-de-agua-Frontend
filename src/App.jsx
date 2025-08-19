@@ -7,7 +7,12 @@ import DashboardHistorico from "./components/DashboardHistorico";
 import PaginaConfiguracoes from "./components/PaginaConfiguracoes";
 import DashboardRelatorios from "./components/DashboardRelatorios";
 
-const URL_SERVIDOR_SOCKET = "https://fluxo-de-agua-backend-production.up.railway.app";
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+const URL_SERVIDOR_SOCKET = BASE_URL;
+const URL_API_HISTORICO = `${BASE_URL}/api/historico/12h`;
+const URL_API_RELATORIO_DIARIO = `${BASE_URL}/api/relatorio/diario`;
+const URL_API_CONFIG = `${BASE_URL}/api/config`;
 
 function App() {
   const [dadosMaisRecentes, setDadosMaisRecentes] = useState({ flow_rate_lpm: 0, total_liters: 0, volume_sessao_atual: 0 });
@@ -50,11 +55,11 @@ function App() {
       case 'tempoReal':
         return <DashboardTempoReal dadosMaisRecentes={dadosMaisRecentes} dadosGrafico={dadosGraficoTempoReal} />;
       case 'historico':
-        return <DashboardHistorico />;
+        return <DashboardHistorico urlApi={URL_API_HISTORICO} />;
       case 'relatorios':
-        return <DashboardRelatorios />;
+      return <DashboardRelatorios urlApi={URL_API_RELATORIO_DIARIO} />;
       case 'config':
-        return <PaginaConfiguracoes />;
+        return <PaginaConfiguracoes urlApi={URL_API_CONFIG} />;
       default:
         return null;
     }
@@ -67,7 +72,7 @@ function App() {
       
       <div className="navegacao-abas">
         <button className={`botao-aba ${abaAtiva === 'tempoReal' ? 'ativo' : ''}`} onClick={() => setAbaAtiva('tempoReal')}>Tempo Real</button>
-        <button className={`botao-aba ${abaAtiva === 'historico' ? 'ativo' : ''}`} onClick={() => setAbaAtiva('historico')}>Histórico (12h)</button>
+        <button className={`botao-aba ${abaAtiva === 'historico' ? 'ativo' : ''}`} onClick={() => setAbaAtiva('historico')}>Histórico</button>
         <button className={`botao-aba ${abaAtiva === 'relatorios' ? 'ativo' : ''}`} onClick={() => setAbaAtiva('relatorios')}>Relatórios</button>
         <button className={`botao-aba ${abaAtiva === 'config' ? 'ativo' : ''}`} onClick={() => setAbaAtiva('config')}>Configurações</button>
       </div>

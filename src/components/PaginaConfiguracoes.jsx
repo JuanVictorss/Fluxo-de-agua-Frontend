@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
-const URL_API = "https://fluxo-de-agua-backend-production.up.railway.app/api/config";
-
-function PaginaConfiguracoes() {
+function PaginaConfiguracoes({ urlApi }) {
   const [config, setConfig] = useState({ fator_calibracao: 7.5, intervalo_telemetria_s: 1 });
   const [mensagem, setMensagem] = useState('');
 
   useEffect(() => {
-    fetch(`${URL_API}/get`)
+    fetch(`${urlApi}/get`)
       .then(res => res.json())
       .then(data => setConfig(data))
       .catch(err => console.error("Erro ao buscar config:", err));
-  }, []);
+  }, [urlApi]); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,16 +20,18 @@ function PaginaConfiguracoes() {
     e.preventDefault();
     setMensagem('Enviando...');
     try {
-      const response = await fetch(`${URL_API}/set`, {
+      const response = await fetch(`${urlApi}/set`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config),
       });
+      
       if (response.ok) {
         setMensagem('Configuração enviada com sucesso ao ESP32!');
       } else {
         setMensagem('Falha ao enviar configuração.');
       }
+
     } catch (error) {
       setMensagem('Erro de comunicação com o servidor.');
     }
@@ -41,7 +41,6 @@ function PaginaConfiguracoes() {
   return (
     <div className="cartao-config">
       <h2>Configurações do Dispositivo</h2>
-      <p>Altere os valores abaixo e clique em salvar para enviá-los ao ESP32 via MQTT.</p>
       <form onSubmit={handleSubmit} className="form-config">
         <div className="form-grupo">
           <label htmlFor="fator_calibracao">Fator de Calibração</label>

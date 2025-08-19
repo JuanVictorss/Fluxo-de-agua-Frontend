@@ -1,44 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const URL_API_HISTORICO = "https://fluxo-de-agua-backend-production.up.railway.app/api/historico/12h";
+const URL_API_SESSOES = "http://localhost:3001/api/historico/sessoes";
 
 function DashboardHistorico() {
-  const [dadosHistorico, setDadosHistorico] = useState([]);
+  const [listaSessoes, setListaSessoes] = useState([]);
+  const [idSessaoSelecionada, setIdSessaoSelecionada] = useState(null);
+  const [dadosGrafico, setDadosGrafico] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    const buscarDadosHistorico = async () => {
+    const buscarListaSessoes = async () => {
       try {
-        const response = await fetch(URL_API_HISTORICO);
+        const response = await fetch(URL_API_SESSOES);
         const data = await response.json();
-        const dadosFormatados = data.map(ponto => ({
-          ...ponto,
-          horario: new Date(ponto.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        }));
-        setDadosHistorico(dadosFormatados);
+        setListaSessoes(data);
+        if (data.length > 0) {
+          setIdSessaoSelecionada(data[0].id);
+        } else {
+          setCarregando(false);
+        }
       } catch (error) {
-        console.error("Erro ao buscar dados históricos:", error);
+        console.error("Erro ao buscar lista de sessões:", error);
+        setCarregando(false);
       }
     };
-    buscarDadosHistorico();
-  }, []); 
+    buscarListaSessoes();
+  }, []);
+
+  useEffect(() => {
+    if (!idSessaoSelecionada) return;
+
+    const buscarDadosSessao = async () => {
+      setCarregando(true);
+      try {
+        const response = await fetch(`${URL_API_SESSOES}/${idSessaoSelecionada}`);
+        const data = await response.json();
+        setDadosGrafico(JSON.parse(data.pontos_grafico_vazao));
+      } catch (error) {
+        console.error(`Erro ao buscar dados para a sessão ${idSessaoSelecionada}:`, error);
+      }
+      setCarregando(false);
+    };
+    buscarDadosSessao();
+  }, [idSessaoSelecionada]);
 
   return (
-    <div className="cartao-grafico">
-      <h2>Consumo Agregado por Minuto (Últimas 12 Horas)</h2>
-      {dadosHistorico.length > 0 ? (
-        <ResponsiveContainer width="100%" height={400}>
-          <AreaChart data={dadosHistorico} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis dataKey="horario" stroke="#aaa" />
-            <YAxis stroke="#aaa" />
-            <Tooltip contentStyle={{ backgroundColor: '#222', border: '1px solid #444' }} />
-            <Legend />
-            <Area type="monotone" dataKey="vazao_media_lpm" name="Vazão Média (L/min)" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />
-            <Area type="monotone" dataKey="vazao_maxima_lpm" name="Vazão Máxima (L/min)" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.3} />
-          </AreaChart>
-        </ResponsiveContainer>
-      ) : <p>Carregando dados históricos ou nenhum dado disponível...</p>}
+    <div className="container-historico">
+      <div className="cartao-sessoes">
+        <h2>Histórico de Consumo por Hora</h2>
+        {listaSessoes.length > 0 ? (
+          <div className="container-dropdown">
+            <label htmlFor="sessao-select">Selecione um período para visualizar:</label>
+            <select
+              id="sessao-select"
+              value={idSessaoSelecionada || ''}
+              onChange={(e) => setIdSessaoSelecionada(Number(e.target.value))}
+            >
+              {listaSessoes.map(sessao => (
+                <option key={sessao.id} value={sessao.id}>
+                  Registro de {new Date(sessao.timestamp_hora).toLocaleString('pt-BR')}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <p>Nenhum registro histórico salvo.</p>
+        )}
+      </div>
+
+      <div className="cartao-grafico">
+        <h2>Gráfico Detalhado da Hora Selecionada</h2>
+        {carregando ? <p>Carregando gráfico...</p> : (
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={dadosGrafico} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+              <XAxis dataKey="time" stroke="#aaa" />
+              <YAxis stroke="#aaa" domain={[0, 'dataMax + 2']} />
+              <Tooltip contentStyle={{ backgroundColor: '#222', border: '1px solid #444' }} />
+              <Legend />
+              <Line type="monotone" dataKey="vazao" name="Vazão (L/min)" stroke="#82ca9d" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 }

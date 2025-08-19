@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const URL_API_DIARIO = "https://fluxo-de-agua-backend-production.up.railway.app/api/relatorio/diario";
-
-function DashboardRelatorios() {
+function DashboardRelatorios({ urlApi }) {
   const [dadosDiarios, setDadosDiarios] = useState([]);
 
   useEffect(() => {
     const buscarDados = async () => {
       try {
-        const response = await fetch(URL_API_DIARIO);
+        const response = await fetch(urlApi);
         const data = await response.json();
         const dadosFormatados = data.map(item => ({
           ...item,
@@ -22,7 +20,7 @@ function DashboardRelatorios() {
       }
     };
     buscarDados();
-  }, []);
+  }, [urlApi]); 
 
   return (
     <div className="cartao-grafico">

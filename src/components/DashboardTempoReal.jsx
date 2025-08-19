@@ -24,6 +24,9 @@ function DashboardTempoReal({ dadosMaisRecentes, dadosGrafico }) {
     },
   ];
 
+
+  const volumeDaSessao = dadosMaisRecentes.volume_sessao_atual || 0;
+
   return (
     <>
       <div className="container-cartoes">
@@ -63,14 +66,14 @@ function DashboardTempoReal({ dadosMaisRecentes, dadosGrafico }) {
         <div className="cartao">
           <h2>Volume da Sessão Atual</h2>
           <p className="valor-dado">
-            {dadosMaisRecentes.volume_sessao_atual.toFixed(2)}{" "}
-            <span>Litros</span>
+            {}
+            {volumeDaSessao.toFixed(2)} <span>Litros</span>
           </p>
         </div>
       </div>
 
       <div className="cartao-grafico">
-        <h2>Histórico em Tempo Real</h2>
+        <h2>Atividade em Tempo Real</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart
             data={dadosGrafico}
@@ -78,7 +81,7 @@ function DashboardTempoReal({ dadosMaisRecentes, dadosGrafico }) {
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis dataKey="time" stroke="#aaa" />
-            <YAxis stroke="#aaa" domain={[0, "dataMax + 1"]} />
+            <YAxis stroke="#aaa" domain={[0, "dataMax + 2"]} />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#222",

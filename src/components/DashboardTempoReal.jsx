@@ -25,8 +25,8 @@ function DashboardTempoReal({ dadosMaisRecentes, dadosGrafico }) {
   ];
 
 
-  const volumeDaSessao = dadosMaisRecentes.volume_sessao_atual || 0;
-
+  const volumeDaSessao = dadosMaisRecentes.total_liters || 0;
+console.log(volumeDaSessao)
   return (
     <>
       <div className="container-cartoes">

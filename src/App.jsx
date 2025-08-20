@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import "./App.css";
 import StatusIndicator from "./components/StatusIndicator";
@@ -15,11 +15,12 @@ const URL_API_RELATORIO_DIARIO = `${BASE_URL}/api/relatorio/diario`;
 const URL_API_CONFIG = `${BASE_URL}/api/config`;
 
 function App() {
-  const [dadosMaisRecentes, setDadosMaisRecentes] = useState({ flow_rate_lpm: 0, total_liters: 0, volume_sessao_atual: 0 });
+  const [dadosMaisRecentes, setDadosMaisRecentes] = useState({ flow_rate_lpm: 0, total_liters: 0 });
   const [dadosGraficoTempoReal, setDadosGraficoTempoReal] = useState([]);
   const [statusEsp, setStatusEsp] = useState('offline');
   const [abaAtiva, setAbaAtiva] = useState('tempoReal');
-  const ultimaVazaoRecebida = useRef(0);
+  
+  const [volumeSessao, setVolumeSessao] = useState(0);
 
   useEffect(() => {
     const socket = io(URL_SERVIDOR_SOCKET);
@@ -27,37 +28,39 @@ function App() {
     socket.on("dados-fluxo", (data) => {
       const dadosParseados = JSON.parse(data);
       setDadosMaisRecentes(dadosParseados);
-      ultimaVazaoRecebida.current = dadosParseados.flow_rate_lpm;
-    });
-    socket.on('status-esp32', (status) => setStatusEsp(status));
 
-    const intervalId = setInterval(() => {
-      const vazaoAtual = ultimaVazaoRecebida.current;
-      const novoPonto = {
+      const volumeAdicionado = dadosParseados.flow_rate_lpm / 60;
+      setVolumeSessao(volumeAnterior => volumeAnterior + volumeAdicionado);
+
+      const novoPontoGrafico = {
         time: new Date().toLocaleTimeString("pt-BR", { hour12: false }),
-        vazao: vazaoAtual,
+        vazao: dadosParseados.flow_rate_lpm,
       };
       setDadosGraficoTempoReal((dadosAtuais) => {
-        const dadosAtualizados = [...dadosAtuais, novoPonto];
+        const dadosAtualizados = [...dadosAtuais, novoPontoGrafico];
         return dadosAtualizados.length > 60 ? dadosAtualizados.slice(1) : dadosAtualizados;
       });
-      ultimaVazaoRecebida.current = 0;
-    }, 1000);
+    });
+
+    socket.on('status-esp32', (status) => setStatusEsp(status));
 
     return () => {
-      clearInterval(intervalId);
       socket.disconnect();
     };
-  }, []);
+  }, []); 
 
   const renderAbaAtiva = () => {
     switch(abaAtiva) {
       case 'tempoReal':
-        return <DashboardTempoReal dadosMaisRecentes={dadosMaisRecentes} dadosGrafico={dadosGraficoTempoReal} />;
+        return <DashboardTempoReal 
+                  dadosMaisRecentes={dadosMaisRecentes} 
+                  dadosGrafico={dadosGraficoTempoReal} 
+                  volumeDaSessao={volumeSessao} 
+               />;
       case 'historico':
         return <DashboardHistorico urlApi={URL_API_HISTORICO} />;
       case 'relatorios':
-      return <DashboardRelatorios urlApi={URL_API_RELATORIO_DIARIO} />;
+        return <DashboardRelatorios urlApi={URL_API_RELATORIO_DIARIO} />;
       case 'config':
         return <PaginaConfiguracoes urlApi={URL_API_CONFIG} />;
       default:
